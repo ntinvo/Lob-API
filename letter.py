@@ -42,9 +42,6 @@ def getRepContact(userInfo):
 	res = requests.get(url)
 	res.encoding
 
-	print(res.status_code)
-	print(url)
-
 	if res.status_code == 200:
 		name = res.json()["officials"][0]["name"]
 		contact = res.json()["officials"][0]["address"][0]
@@ -85,8 +82,18 @@ def createAndSendLetter(userInfo, repContact):
 	fromAddress = createAddress(userInfo)
 	toAddress = createAddress(repContact)
 
-	print(fromAddress)
-	print(toAddress)
+	htmlFile = open("letter.html", "r")
+	htmlLetter = htmlFile.read()
+
+	letter = lob.Letter.create(
+		description = "Letter to legislator",
+		to_address = toAddress,
+		from_address = fromAddress,
+		file = htmlLetter,
+		color = True
+	)
+	htmlFile.close()
+	print(letter)
 
 def main():
 	# Set the color to CYAN
@@ -97,8 +104,6 @@ def main():
 
 	# Get representative's information
 	repContact = getRepContact(userInfo)
-
-	print(repContact)
 
 	# Check to see if we can find the rep's info
 	if repContact is None:
@@ -111,18 +116,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
