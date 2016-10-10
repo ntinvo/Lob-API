@@ -1,9 +1,9 @@
-import requests, json
-import lob
+import requests, json, sys, lob
+from states import states
 
 # API keys
-LOB_API_KEY = "test_b3d445043e5b20da2a21b5b383cd09d77f1"
-GOOGLE_API_KEY = "AIzaSyBH7ovb41j8HaaYhJqolwW4Ury5dfAL_e0"
+lob.api_key = "test_b3d445043e5b20da2a21b5b383cd09d77f1"
+google_api_key = "AIzaSyBH7ovb41j8HaaYhJqolwW4Ury5dfAL_e0"
 
 # Color and reset
 CYAN = '\033[96m'
@@ -31,17 +31,19 @@ def getUserInputs():
 	userInfo["line2"] = address2
 	userInfo["city"] = city
 	userInfo["state"] = state
-	userInfo["zipcode"] = zipcode
+	userInfo["zip"] = zipcode
 	userInfo["message"] = message
 	return userInfo
 
 def getRepContact(userInfo):
-
-	address = userInfo["line1"] + userInfo["line2"] + userInfo["city"] + userInfo["state"] + userInfo["zipcode"]
+	address = userInfo["line1"] + " " + userInfo["line2"] + " " + userInfo["city"] + " " + userInfo["state"] + " " + userInfo["zip"]
 	address = address.replace(" ", "+")
-	url = "https://www.googleapis.com/civicinfo/v2/representatives?address=" + address + "&key=" + GOOGLE_API_KEY
+	url = "https://www.googleapis.com/civicinfo/v2/representatives?address=" + address + "&key=" + google_api_key
 	res = requests.get(url)
 	res.encoding
+
+	print(res.status_code)
+	print(url)
 
 	if res.status_code == 200:
 		name = res.json()["officials"][0]["name"]
@@ -51,11 +53,42 @@ def getRepContact(userInfo):
 	else:
 		return None
 
+def createAddress(info):
+	# Check and get infomation
+	name = info["name"] if "name" in info else ""
+	address_line1 = info["line1"] if "line1" in info else ""
+	address_line2 = info["line2"] if "line2" in info else ""
+	city = info["city"] if "city" in info else ""
+	zipcode = info["zip"] if "zip" in info else ""
+	state = info["state"] if "state" in info else ""
+	if len(state) != 2 and state.upper() in states:
+		state = states[state.upper()]
+
+	# Create address
+	try:
+		address = lob.Address.create(
+			name = name,
+			address_line1 = address_line1,
+			address_line2 = address_line2,
+			address_city = city,
+			address_state = state,
+			address_zip = zipcode
+		)
+	except lob.error.InvalidRequestError:
+		print(RED + "[ERROR]: Please Check Your Inputs!!! DOUBLE")
+		resetColor()
+		sys.exit(0)
+
+	return address
+
 def createAndSendLetter(userInfo, repContact):
-	print("GOT HERE")
-	
+	fromAddress = createAddress(userInfo)
+	toAddress = createAddress(repContact)
+
+	print(fromAddress)
+	print(toAddress)
+
 def main():
-	
 	# Set the color to CYAN
 	getColor()
 
@@ -65,15 +98,16 @@ def main():
 	# Get representative's information
 	repContact = getRepContact(userInfo)
 
+	print(repContact)
+
 	# Check to see if we can find the rep's info
 	if repContact is None:
 		print(RED + "[ERROR]: Please Check Your Inputs!!!")
 	else:
 		createAndSendLetter(userInfo, repContact)
-	
+
 	# Reset terminal's color
 	resetColor()
-
 
 if __name__ == '__main__':
 	main()
