@@ -19,7 +19,7 @@ def getUserInputs():
 	return name, address1, address2, city, state, zipcode
 
 def getRepContact(inputs):
-	
+	pass
 
 def main():
 	getColor()
