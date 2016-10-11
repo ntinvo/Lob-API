@@ -10,6 +10,7 @@ CYAN = '\033[96m'
 RESET = '\033[0m'
 WARNING = '\033[93m'
 RED = '\033[31m'
+GREEN = '\033[32m'
 
 def getColor():
 	print(CYAN, end="")
@@ -78,12 +79,13 @@ def createAddress(info):
 
 	return address
 
+
 def createAndSendLetter(userInfo, repContact):
 	fromAddress = createAddress(userInfo)
 	toAddress = createAddress(repContact)
 
 	htmlFile = open("letter.html", "r")
-	htmlLetter = htmlFile.read()
+	htmlLetter = htmlFile.read().replace("message", userInfo["message"])	
 
 	letter = lob.Letter.create(
 		description = "Letter to legislator",
@@ -93,7 +95,7 @@ def createAndSendLetter(userInfo, repContact):
 		color = True
 	)
 	htmlFile.close()
-	print(letter)
+	print(GREEN + letter.url)
 
 def main():
 	# Set the color to CYAN
