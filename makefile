@@ -3,4 +3,3 @@ clean:
 
 run:
 	python3 letter.py
-

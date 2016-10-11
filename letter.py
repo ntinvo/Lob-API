@@ -12,13 +12,38 @@ WARNING = '\033[93m'
 RED = '\033[31m'
 GREEN = '\033[32m'
 
-def getColor():
+def setCyanColor():
+	'''
+	Set the text's color of the terminal to Cyan
+	'''
 	print(CYAN, end="")
 
+
 def resetColor():
+	'''
+	Reset the text's color of the terminal
+	'''
 	print(RESET, end="")
 
+
+def greeting():
+	'''
+	Some greating messages for the program
+	'''
+	print("\t\t******************************************")
+	print("\t\t********** LOB CODING CHALLENGE **********")
+	print("\t\t******************************************")
+	print(WARNING + "\tPlease Enter Your Information Below And a Message to Your Legislator" + RESET)
+
+
 def getUserInputs():
+	'''
+	Prompt the user for input from terminal
+	This will return a dictionary contains
+	all of infomation related to the user 
+	such as name, address, city, state, zip
+	and the message to the legislator. 
+	'''
 	name = input(CYAN + 'Full Name: ')
 	address1 = input(CYAN + 'Address Line 1: ')
 	address2 = input(CYAN + 'Address Line 2: ')
@@ -36,13 +61,25 @@ def getUserInputs():
 	userInfo["message"] = message
 	return userInfo
 
+
 def getRepContact(userInfo):
+	'''
+	Get the representative's contact based
+	on the inputs of the user. This will
+	return the dictionary contains all of 
+	information related to the representative.
+	If the status code is anything other than
+	200, then returns None because there is 
+	some error when making request to Google
+	'''
+	# Make request to Google to get representative's information
 	address = userInfo["line1"] + " " + userInfo["line2"] + " " + userInfo["city"] + " " + userInfo["state"] + " " + userInfo["zip"]
 	address = address.replace(" ", "+")
 	url = "https://www.googleapis.com/civicinfo/v2/representatives?address=" + address + "&key=" + google_api_key
 	res = requests.get(url)
 	res.encoding
 
+	# Check for error and return
 	if res.status_code == 200:
 		name = res.json()["officials"][0]["name"]
 		contact = res.json()["officials"][0]["address"][0]
@@ -51,8 +88,16 @@ def getRepContact(userInfo):
 	else:
 		return None
 
+
 def createAddress(info):
-	# Check and get infomation
+	'''
+	Create the address obj based on the information
+	passed in from createAndSendLetter(). This will
+	create the address for both the sender and the
+	receiver. If there is something wrong when making 
+	the request, exit out of the program
+	'''
+	# Gather infomation
 	name = info["name"] if "name" in info else ""
 	address_line1 = info["line1"] if "line1" in info else ""
 	address_line2 = info["line2"] if "line2" in info else ""
@@ -81,40 +126,66 @@ def createAddress(info):
 
 
 def createAndSendLetter(userInfo, repContact):
+	'''
+	Create the letter to send to the legislator
+	based on the user infomation and the rep's 
+	information. This will print out the letter's
+	url at the end if there is no error.
+	'''
+	# Create the from and to address
 	fromAddress = createAddress(userInfo)
 	toAddress = createAddress(repContact)
-
+	
+	# Open the letter.html template
 	htmlFile = open("letter.html", "r")
 	htmlLetter = htmlFile.read().replace("message", userInfo["message"])	
 
-	letter = lob.Letter.create(
-		description = "Letter to legislator",
-		to_address = toAddress,
-		from_address = fromAddress,
-		file = htmlLetter,
-		color = True
-	)
+	# Create the letter
+	try:
+		letter = lob.Letter.create(
+			description = "Letter to legislator",
+			to_address = toAddress,
+			from_address = fromAddress,
+			file = htmlLetter,
+			color = True
+		)
+	except:
+		print(RED + "[ERROR]: Please Check Your Inputs!!! DOUBLE")
+		resetColor()
+		htmlFile.close()
+		sys.exit(0)
+
 	htmlFile.close()
+	print(WARNING + "\t\t\t\tLetter URL:" + RESET)
 	print(GREEN + letter.url)
 
+
 def main():
-	# Set the color to CYAN
-	getColor()
+	'''
+	This is like a controller, it will 
+	appropriate functions from getting 
+	user's info, rep's infor to creating
+	addresses and sending the letter.
+	'''
+	# Set color and greating
+	setCyanColor()
+	greeting()
 
-	# Get user's information
-	userInfo = getUserInputs()
+	# Main program
+	try:
+		userInfo = getUserInputs()
+		repContact = getRepContact(userInfo)
+		if repContact is None:
+			print(RED + "[ERROR]: Please Check Your Inputs!!!")
+		else:
+			createAndSendLetter(userInfo, repContact)
+	except:
+		resetColor()
+		sys.exit(0)
 
-	# Get representative's information
-	repContact = getRepContact(userInfo)
-
-	# Check to see if we can find the rep's info
-	if repContact is None:
-		print(RED + "[ERROR]: Please Check Your Inputs!!!")
-	else:
-		createAndSendLetter(userInfo, repContact)
-
-	# Reset terminal's color
+	# Reset color
 	resetColor()
+
 
 if __name__ == '__main__':
 	main()
