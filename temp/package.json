@@ -17,7 +17,7 @@
     "bluebird": "^3.0.6",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "request": "^2.55.0"
+    "request": "^2.75.0"
   },
   "devDependencies": {
     "chai": "^2.2.0",
