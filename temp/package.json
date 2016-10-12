@@ -14,10 +14,12 @@
   "homepage": "https://github.com/lob/lob-node",
   "author": "Lob <support@lob.com> (https://lob.com/)",
   "dependencies": {
+    "async-request": "^1.2.0",
     "bluebird": "^3.0.6",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "request": "^2.75.0"
+    "request": "^2.75.0",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "chai": "^2.2.0",
