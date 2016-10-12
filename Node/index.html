@@ -1,14 +1,32 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html>
 <head>
-	<meta charset = "UTF-8">
-	<title>React App</title>
+	<title>Lob Coding Challenge</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 </head>
-<body>
-	<div id="app"></div>
+<body ng-app="sendLetterApp" ng-controller="mainCtrl">
+	<div class="container">
+		<div class="row">
+			<img class="img-responsive center-block" src="img/Lob-Logo.png" alt="Lob Logo"/>
+		</div>
+
+		<div class="row">
+			<form class="form-style" ng-submit="sendLetter()">
+				<input type="text" required="true" class="form-control" placeholder="Name" value="" ng-model="user.name"/>
+				<input type="text" required="true" class="form-control" placeholder="Address line 1" value="" ng-model="user.address1"/>
+				<input type="text" class="form-control" placeholder="Address line 2 (optional)" value="" ng-model="user.address2"/>
+				<input type="text" required="true" class="form-control" placeholder="City" value="" ng-model="user.city"/>
+				<input type="text" required="true" class="form-control" placeholder="State" value="" ng-model="user.state"/>
+				<input type="text" required="true" class="form-control" placeholder="Zipcode" value="" ng-model="user.zipcode"/>
+				<textarea class="form-control" required="true" rows="5" placeholder="Message to the legislator ..." value="" ng-model="user.message"></textarea>
+				<button type="submit" class="btn btn-primary">Send</button>
+			</form>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/letterController.js"></script>
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	<script src = "index.js"></script>
 </body>
 </html>
