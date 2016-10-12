@@ -33,7 +33,7 @@ app.post('/send', function(req, res) {
 	if(repContact == null) {
 		res.json("[ERROR] : Please Check Your Inputs!!!");
 	}
-	console.log("got here");
+	
 });
 
 
@@ -56,32 +56,22 @@ var getRepContact = function(userInfo) {
 	var xhr = new XMLHttpRequest();
     xhr.open( "GET", url, false );
     xhr.send( null );
-    console.log(xhr.responseText);
 
-	// try {
-	// 	response = await requestURL(url);
-	// 	console.log(response.body);
-	// } catch (e) {
-
-	// }
-		// request(url, function(error, res, body) {
-		// 	if(!error && res.statusCode == 200) {
-		// 		var temp = JSON.parse(body).officials;
-		// 		var contact = {
-		// 			name : temp[0].name,
-		// 			address1 : temp[0].address[0].line1,
-		// 			address2 : temp[0].address[0].line2,
-		// 			city : temp[0].address[0].city,
-		// 			state : temp[0].address[0].state,
-		// 			zip : temp[0].address[0].zip
-		// 		};
-		// 		console.log("orher ");
-		// 		return contact;
-		// 	} else {
-		// 		console.log(body);
-		// 		return null;
-		// 	}
-		// });
+	if(xhr.status == 200) {
+		var temp = JSON.parse(xhr.responseText).officials;
+		console.log(temp);
+		var contact = {
+			name : temp[0].name,
+			address1 : temp[0].address[0].line1,
+			address2 : temp[0].address[0].line2,
+			city : temp[0].address[0].city,
+			state : temp[0].address[0].state,
+			zip : temp[0].address[0].zip
+		};
+		return contact;
+    } else {
+    	return null;
+    }
 };
 
 // Listen on port 8000
