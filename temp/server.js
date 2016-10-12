@@ -29,7 +29,10 @@ app.get('/',function(req,res){
 
 // Catch the send request
 app.post('/send', function(req, res) {
-	var repContact = getRepContact(req.body)
+	var repContact = getRepContact(req.body);
+	if(repContact == null) {
+		res.json("[ERROR] : Please Check Your Inputs!!!");
+	}
 });
 
 // Get rep's information
@@ -42,9 +45,24 @@ var getRepContact = function(userInfo) {
 	var url = address1 + "+" + address2 + "+" + city + "+" + state + "+" + zipcode;
 	url = url.split("++").join("+");
 	url = url.split(" ").join("+");
-
 	url = "https://www.googleapis.com/civicinfo/v2/representatives?address=" + url + "&key=" + google_api_key
-	console.log(url);
+
+	request(url, function(error, res, body) {
+		if(!error && res.statusCode == 200) {
+			var temp = JSON.parse(body).officials;
+			var contact = {
+				name : temp[0].name,
+				address1 : temp[0].address[0].line1,
+				address2 : temp[0].address[0].line2,
+				city : temp[0].address[0].city,
+				state : temp[0].address[0].state,
+				zip : temp[0].address[0].zip
+			};
+			return contact;
+		} else {
+			return null;
+		}
+	});
 };
 
 // Listen on port 8000
