@@ -14,14 +14,14 @@
 
 		<div class="row">
 			<form class="form-style" ng-submit="sendLetter()">
-				<input type="text" required="true" class="form-control" placeholder="Name"  />
-				<input type="text" required="true" class="form-control" placeholder="Address line 1" />
-				<input type="text" class="form-control" placeholder="Address line 2 (optional)" />
-				<input type="text" required="true" class="form-control" placeholder="City" />
-				<input type="text" required="true" class="form-control" placeholder="State" />
-				<input type="text" required="true" class="form-control" placeholder="Zipcode" />
-				<textarea class="form-control" required="true" rows="5" placeholder="Message to the legislator ..."></textarea>
-				<button  type="submit" class="btn btn-primary">Send</button>
+				<input type="text" required="true" class="form-control" placeholder="Name" value="" ng-model="user.name"/>
+				<input type="text" required="true" class="form-control" placeholder="Address line 1" value="" ng-model="user.address1"/>
+				<input type="text" class="form-control" placeholder="Address line 2 (optional)" value="" ng-model="user.address2"/>
+				<input type="text" required="true" class="form-control" placeholder="City" value="" ng-model="user.city"/>
+				<input type="text" required="true" class="form-control" placeholder="State" value="" ng-model="user.state"/>
+				<input type="text" required="true" class="form-control" placeholder="Zipcode" value="" ng-model="user.zipcode"/>
+				<textarea class="form-control" required="true" rows="5" placeholder="Message to the legislator ..." value="" ng-model="user.message"></textarea>
+				<button type="submit" class="btn btn-primary">Send</button>
 			</form>
 		</div>
 	</div>
