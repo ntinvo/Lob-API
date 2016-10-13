@@ -5,3 +5,12 @@
 .form-style > * {
 	margin-top: 20px;
 }
+
+.output {
+	text-align: center;
+	padding-top: 20px;
+}
+
+.output > * {
+	padding-top: 10px;
+}
