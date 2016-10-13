@@ -67,9 +67,6 @@ var Lob = new lobFactory('test_fd34e1b5ea86a597ec89f7f2e46940c874d');
 // Google API
 var google_api_key = "AIzaSyBXcjOL1eor5k2Xiiuo_myO4D_Ih0ZiF1E";
 
-// Read letter.html template
-var file = fs.readFileSync(__dirname + '/static/html/letter.html').toString();
-
 // Set static folder
 app.use(express.static(__dirname + '/static'));
 
@@ -83,6 +80,9 @@ app.get('/',function(req,res){
 
 // Catch the send request
 app.post('/send', function(req, res) {
+	// Read letter.html template
+	var file = fs.readFileSync(__dirname + '/static/html/letter.html').toString();
+
 	// Get rep's contact
 	var repContact = getRepContact(req.body);
 	var state = getState(req.body.state);
@@ -93,14 +93,14 @@ app.post('/send', function(req, res) {
 	}
 
 	// Crete letter
-	createLetter(req.body, repContact, res);
+	createLetter(req.body, repContact, res, file);
 });
 
 
 // Create letter
-var createLetter = function(fromAddress, toAddress, res) {
+var createLetter = function(fromAddress, toAddress, res, file) {
 	var state = getState(fromAddress.state);
-	file = file.replace("message", fromAddress.message);
+	var file = file.replace("message", fromAddress.message);
 
 	Lob.addresses.create({
 		name: toAddress.name,
